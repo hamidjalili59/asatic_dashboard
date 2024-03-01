@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:asatic_dashboard/main.dart';
 import 'package:flutter/services.dart';
 
 ///
@@ -53,4 +52,28 @@ class WifiUtils {
 
   ///
   static const wifiListChannel = MethodChannel('samples.flutter.dev/wifi');
+}
+
+///
+class WifiItem {
+  ///
+  const WifiItem(this.ssid, this.bSsid);
+
+  ///
+  factory WifiItem.fromJson(Map<String, dynamic> json) {
+    return WifiItem(json['SSID'] as String, json['BSSID'] as String);
+  }
+
+  ///
+  final String ssid;
+
+  ///
+  final String bSsid;
+
+  ///
+
+  @override
+  String toString() {
+    return ssid;
+  }
 }
