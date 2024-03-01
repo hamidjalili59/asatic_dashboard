@@ -1,5 +1,6 @@
 import 'package:asatic_dashboard/src/presentation/auth/pages/auth_page.dart';
 import 'package:asatic_dashboard/src/presentation/devices/pages/devices_page.dart';
+import 'package:asatic_dashboard/src/presentation/devices/pages/widget/new_device_dialog.dart';
 import 'package:asatic_dashboard/src/presentation/home/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -20,96 +21,79 @@ class AppRouter {
 
   final GoRouter _router = GoRouter(
     routes: <RouteBase>[
-      GoRoute(
+      GoRouterMethods.routeNonTransition(
         path: '/',
-        name: '/home',
-        builder: (BuildContext context, GoRouterState state) =>
-            const HomePage(),
-      ),
-      GoRoute(
-        path: '/auth',
         name: '/auth',
-        builder: (BuildContext context, GoRouterState state) =>
-            const AuthPage(),
+        pageBuilder: (state) => const AuthPage(),
       ),
-      GoRoute(
+      GoRouterMethods.routeNonTransition(
+        path: '/home',
+        name: '/home',
+        pageBuilder: (state) => const HomePage(),
+      ),
+      GoRouterMethods.routeNonTransition(
         path: '/devices',
         name: '/devices',
-        builder: (BuildContext context, GoRouterState state) =>
-            const DevicesPage(),
-        // routes: <RouteBase>[
-        //   GoRoute(
-        //     path: 'license',
-        //     pageBuilder: (BuildContext context, GoRouterState state) {
-        //       return DialogPage(builder: (_) => const DialogHamid());
-        //     },
-        //   ),
-        // ],
+        pageBuilder: (state) => const DevicesPage(),
+        routes: [
+          GoRouterMethods.routeModalFromBottom(
+            name: 'newDevice',
+            path: 'newDevice',
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              return AnimatedDialogPage(
+                builder: (_) => const NewDeviceDialogWidget(),
+              );
+            },
+          ),
+        ],
       ),
     ],
   );
 }
 
 ///
-class DialogHamid extends StatelessWidget {
+class GoRouterMethods {
   ///
-  const DialogHamid({super.key});
+  static GoRoute routeModalFromBottom({
+    required String name,
+    required String path,
+    required Page<dynamic> Function(BuildContext, GoRouterState)? pageBuilder,
+  }) =>
+      GoRoute(
+        path: path,
+        name: name,
+        pageBuilder: pageBuilder,
+      );
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            GestureDetector(
-              onTap: () async {
-                // print(0000000000);
-                // await WiFiForIoTPlugin.forceWifiUsage(true)
-                //     .whenComplete(() async {
-                //   print('1111111111111');
-                //   await WiFiForIoTPlugin.registerWifiNetwork('SH')
-                //       .whenComplete(() async {
-                //     print('33333333');
-                //     await WiFiForIoTPlugin.connect(
-                //       'SH',
-                //       password: '09155813918',
-                //       joinOnce: false,
-                //       security: NetworkSecurity.WPA,
-                //     ).whenComplete(
-                //       () => print('------------------------'),
-                //     );
-                //   });
-                // });
-                // ScaffoldMessenger.of(context).showSnackBar(
-                //   const SnackBar(
-                //     content: Text('در حال اتصال'),
-                //   ),
-                // );
-              },
-              child: Container(
-                width: 500,
-                height: 200,
-                color: Colors.greenAccent,
-              ),
-            ),
-          ],
+  ///
+  static GoRoute routeNonTransition({
+    required String name,
+    required String path,
+    required Widget Function(GoRouterState state) pageBuilder,
+    List<GoRoute> routes = const [],
+  }) =>
+      GoRoute(
+        path: path,
+        name: name,
+        routes: routes,
+        pageBuilder: (context, state) => CustomTransitionPage(
+          child: pageBuilder(state),
+          key: state.pageKey,
+          restorationId: state.pageKey.value,
+          transitionDuration: const Duration(milliseconds: 500),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              child,
         ),
-      ),
-    );
-  }
+      );
 }
 
 ///
-class DialogPage<T> extends Page<T> {
+class AnimatedDialogPage<T> extends Page<T> {
   ///
-  const DialogPage({
+  const AnimatedDialogPage({
     required this.builder,
-    this.anchorPoint,
-    this.barrierColor = Colors.black54,
+    this.animationDuration = const Duration(milliseconds: 500),
+    this.barrierColor = Colors.black38,
     this.barrierDismissible = true,
     this.barrierLabel,
     this.useSafeArea = true,
@@ -121,10 +105,15 @@ class DialogPage<T> extends Page<T> {
   });
 
   ///
-  final Offset? anchorPoint;
+  double customCurve(double animationProgress) {
+    return Curves.decelerate.transform(animationProgress);
+  }
 
   ///
-  final Color? barrierColor;
+  final Duration animationDuration;
+
+  ///
+  final Color barrierColor;
 
   ///
   final bool barrierDismissible;
@@ -142,15 +131,30 @@ class DialogPage<T> extends Page<T> {
   final WidgetBuilder builder;
 
   @override
-  Route<T> createRoute(BuildContext context) => DialogRoute<T>(
-        context: context,
-        settings: this,
-        builder: builder,
-        anchorPoint: anchorPoint,
-        barrierColor: barrierColor,
-        barrierDismissible: barrierDismissible,
-        barrierLabel: barrierLabel,
-        useSafeArea: useSafeArea,
-        themes: themes,
-      );
+  Route<T> createRoute(BuildContext context) {
+    return PageRouteBuilder<T>(
+      settings: this,
+      opaque: false,
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(0, (1.0 - customCurve(animation.value)) * 400),
+              child: Opacity(
+                opacity: animation.value,
+                child: child,
+              ),
+            );
+          },
+          child: builder(context),
+        );
+      },
+      transitionDuration: animationDuration,
+      fullscreenDialog: true,
+      barrierColor: barrierColor,
+      barrierDismissible: barrierDismissible,
+      barrierLabel: barrierLabel,
+    );
+  }
 }

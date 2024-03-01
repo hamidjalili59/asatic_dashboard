@@ -86,9 +86,7 @@ class _AuthMobileWidgetState extends State<AuthMobileWidget> {
             loginSuccess: () async {
               context.go('/devices');
             },
-            loginFailed: () async {
-              print('ridi');
-            },
+            loginFailed: () async {},
           );
         },
         child: SizedBox(

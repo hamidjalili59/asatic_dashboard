@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 ///
@@ -22,7 +23,7 @@ class WifiUtils {
         );
       }
     } on PlatformException catch (e) {
-      print("Failed to get wifi list: '${e.message}'.");
+      debugPrint("Failed to get wifi list: '${e.message}'.");
     }
     await Future<void>.delayed(const Duration(seconds: 1));
 
@@ -31,22 +32,25 @@ class WifiUtils {
 
   ///
   static Future<void> connectToWifi(
-      String ssid, String bssid, String password) async {
+    String ssid,
+    String bssid,
+    String password,
+  ) async {
     // Connect to wifi network.
 
     try {
-      print('start');
       // Invoke the Kotlin method to connect to wifi.
       await wifiListChannel.invokeMethod('connectToWifi', {
         'ssid': ssid,
         'bssid': bssid,
         'password': password,
-      }).then(print);
-      print('end');
+      }).then(
+        (value) => debugPrint,
+      );
     } on PlatformException catch (e) {
-      print("Failed to connect: '${e.message}'.");
+      debugPrint("Failed to connect: '${e.message}'.");
     } catch (e) {
-      print('rifidiid $e');
+      debugPrint('rifidiid $e');
     }
   }
 

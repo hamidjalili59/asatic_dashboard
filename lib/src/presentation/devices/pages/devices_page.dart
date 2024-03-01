@@ -2,6 +2,7 @@ import 'package:asatic_dashboard/src/presentation/devices/bloc/devices/devices_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 ///
 class DevicesPage extends StatelessWidget {
@@ -12,7 +13,9 @@ class DevicesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: () {}),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async => context.go('/devices/newDevice'),
+        ),
         body: BlocProvider(
           create: (context) => DevicesBloc(),
           child: SizedBox(
@@ -48,7 +51,14 @@ class DevicesPage extends StatelessWidget {
                       },
                     );
                   },
-                  initial: () => const SizedBox.shrink(),
+                  initial: () => const SizedBox.shrink(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(),
+                      ],
+                    ),
+                  ),
                   loadInProgress: () => const SizedBox.shrink(),
                   getDeviceFailed: () => const SizedBox.shrink(),
                 );
