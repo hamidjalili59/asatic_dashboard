@@ -1,5 +1,6 @@
 import 'package:asatic_dashboard/src/core/router/router.dart';
 import 'package:asatic_dashboard/src/presentation/auth/bloc/auth/auth_bloc.dart';
+import 'package:asatic_dashboard/src/presentation/devices/pages/widget/router_config_view_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +72,8 @@ class _AuthMobileWidgetState extends State<AuthMobileWidget> {
         onPressed: () async {
           AuthBloc().add(
             AuthEvent.login(
-              username: phoneController.text,
+              username: '9361360584',
+              // username: phoneController.text,
               password: passwordController.text,
             ),
           );
@@ -105,70 +107,29 @@ class _AuthMobileWidgetState extends State<AuthMobileWidget> {
                 ),
               ),
               SizedBox(height: 36.h),
-              PhysicalModel(
-                color: Colors.black45,
-                shadowColor: Colors.black45,
-                elevation: phoneNode.hasFocus ? 20 : 5,
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  width: 0.6.sw,
-                  height: 60.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.black38),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    autofocus: true,
-                    focusNode: phoneNode,
-                    controller: phoneController,
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(borderSide: BorderSide.none),
-                      counterText: '',
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
+              SizedBox(
+                width: 0.6.sw,
+                child: CustomTextFieldComponent(
+                  focusNode: phoneNode,
+                  textController: phoneController,
+                  title: 'شماره تلفن',
                 ),
               ),
               SizedBox(height: 36.h),
-              PhysicalModel(
-                color: Colors.black45,
-                shadowColor: Colors.black45,
-                elevation: passwordNode.hasFocus ? 20 : 5,
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  width: 0.6.sw,
-                  height: 60.h,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.black38),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: TextField(
-                    textAlign: TextAlign.center,
-                    focusNode: passwordNode,
-                    controller: passwordController,
-                    onSubmitted: (value) {
-                      AuthBloc().add(
-                        AuthEvent.login(
-                          username: phoneController.text,
-                          password: passwordController.text,
-                        ),
-                      );
-                    },
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(borderSide: BorderSide.none),
-                      counterText: '',
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ),
+              SizedBox(
+                width: 0.6.sw,
+                child: CustomTextFieldComponent(
+                  focusNode: passwordNode,
+                  textController: passwordController,
+                  title: 'کلمه عبور',
+                  onSubmitted: (value) {
+                    AuthBloc().add(
+                      AuthEvent.login(
+                        username: phoneController.text,
+                        password: passwordController.text,
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

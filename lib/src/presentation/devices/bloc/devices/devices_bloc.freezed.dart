@@ -351,7 +351,10 @@ class _$GetDeviceSuccessfullImpl implements _GetDeviceSuccessfull {
   const _$GetDeviceSuccessfullImpl({final List<Device> devices = const []})
       : _devices = devices;
 
+  ///
   final List<Device> _devices;
+
+  ///
   @override
   @JsonKey()
   List<Device> get devices {
@@ -464,6 +467,7 @@ abstract class _GetDeviceSuccessfull implements DevicesState {
   const factory _GetDeviceSuccessfull({final List<Device> devices}) =
       _$GetDeviceSuccessfullImpl;
 
+  ///
   List<Device> get devices;
   @JsonKey(ignore: true)
   _$$GetDeviceSuccessfullImplCopyWith<_$GetDeviceSuccessfullImpl>

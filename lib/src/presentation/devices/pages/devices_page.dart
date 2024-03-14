@@ -15,6 +15,7 @@ class DevicesPage extends StatelessWidget {
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () async => context.go('/devices/newDevice'),
+          child: Icon(Icons.add_rounded, size: 36.r),
         ),
         body: BlocProvider(
           create: (context) => DevicesBloc(),
@@ -24,43 +25,95 @@ class DevicesPage extends StatelessWidget {
             child: BlocBuilder<DevicesBloc, DevicesState>(
               bloc: DevicesBloc(),
               builder: (context, state) {
-                return state.when(
-                  getDeviceSuccessfull: (devices) {
-                    return ListView.separated(
-                      padding: EdgeInsets.only(top: 12.h),
-                      itemCount: devices.length,
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 12.h);
-                      },
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black54,
+                return Column(
+                  children: [
+                    SizedBox(height: 12.h),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.w),
+                      child: Container(
+                        width: double.infinity,
+                        height: 60.h,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black26, width: 3.w),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                decoration: InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2.h,
+                                      color: Colors.purpleAccent.shade700
+                                          .withOpacity(0.5),
+                                    ),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      width: 2.h,
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  suffixIcon: Icon(
+                                    Icons.search_rounded,
+                                    size: 36.r,
+                                    color: Colors.black54,
+                                  ),
+                                ),
                               ),
-                              borderRadius: BorderRadius.circular(12),
                             ),
-                            width: double.infinity,
-                            height: 60.h,
-                            alignment: Alignment.center,
-                            child: Text(devices[index].name ?? 'UnNamed'),
-                          ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    state.when(
+                      getDeviceSuccessfull: (devices) {
+                        return ListView.separated(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.only(top: 12.h),
+                          itemCount: devices.length,
+                          separatorBuilder: (context, index) {
+                            return SizedBox(height: 12.h);
+                          },
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16.w),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black54,
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                width: double.infinity,
+                                height: 60.h,
+                                alignment: Alignment.center,
+                                child: Text(devices[index].name ?? 'UnNamed'),
+                              ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                  initial: () => const SizedBox.shrink(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(),
-                      ],
+                      initial: () => const SizedBox.shrink(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                          ],
+                        ),
+                      ),
+                      loadInProgress: () => const SizedBox.shrink(),
+                      getDeviceFailed: () => const SizedBox.shrink(),
                     ),
-                  ),
-                  loadInProgress: () => const SizedBox.shrink(),
-                  getDeviceFailed: () => const SizedBox.shrink(),
+                  ],
                 );
               },
             ),

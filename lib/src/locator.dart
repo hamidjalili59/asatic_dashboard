@@ -4,11 +4,9 @@ import 'package:asatic_dashboard/src/features/devices/domain/usecases/get_device
 import 'package:get_it/get_it.dart';
 
 ///
-GetIt locator = GetIt.asNewInstance();
+GetIt locator = GetIt.instance;
 
 ///
-Future<void> locatorSetUp() async {
-  locator
-    ..registerSingleton<DevicesRepository>(DevicesRepositoryImpl())
-    ..registerSingleton<GetDevicesUseCase>(GetDevicesUseCase(locator()));
-}
+GetIt setUp() => locator
+  ..registerSingleton<DevicesRepository>(DevicesRepositoryImpl())
+  ..registerSingleton<GetDevicesUseCase>(GetDevicesUseCase(locator()));
