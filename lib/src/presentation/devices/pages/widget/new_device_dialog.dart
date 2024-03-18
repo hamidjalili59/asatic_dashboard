@@ -2,6 +2,7 @@
 
 import 'package:asatic_dashboard/src/presentation/devices/bloc/new_device/new_device_bloc.dart';
 import 'package:asatic_dashboard/src/presentation/devices/pages/widget/device_config_view.dart';
+import 'package:asatic_dashboard/src/presentation/devices/pages/widget/queue_manage_view.dart';
 import 'package:asatic_dashboard/src/presentation/devices/pages/widget/router_config_view_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +24,7 @@ class _NewDeviceDialogWidgetState extends State<NewDeviceDialogWidget> {
   final List<Widget> dialogViewList = [
     const RouterConfigViewWidget(),
     const DeviceConfigView(),
-    const QueueManagerVew(),
+    const QueueManagerView(),
     Container(
       color: Colors.green,
     ),
@@ -67,7 +68,7 @@ class _NewDeviceDialogWidgetState extends State<NewDeviceDialogWidget> {
                           width: 1.sw,
                           height: currentPage == 3
                               ? .39.sh
-                              : .39.sh + (currentPage * 0.15.sh),
+                              : .33.sh + (currentPage * 0.15.sh),
                           duration: Durations.short4,
                           child: BlocBuilder<NewDeviceBloc, NewDeviceState>(
                             bloc: NewDeviceBloc(),
@@ -82,8 +83,8 @@ class _NewDeviceDialogWidgetState extends State<NewDeviceDialogWidget> {
                                       },
                                       configRouter: () {
                                         return Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: 26.r,
+                                          padding: EdgeInsets.only(
+                                            top: 12.h,
                                           ),
                                           child: PageView.builder(
                                             physics:
@@ -96,7 +97,59 @@ class _NewDeviceDialogWidgetState extends State<NewDeviceDialogWidget> {
                                               });
                                             },
                                             itemBuilder: (context, index) {
-                                              return dialogViewList[index];
+                                              return Stack(
+                                                children: [
+                                                  dialogViewList[index],
+                                                  if (index == 2) ...[
+                                                    Positioned(
+                                                      top: 0,
+                                                      left: 0,
+                                                      right: 0,
+                                                      height: 24.h,
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color:
+                                                                  Colors.white,
+                                                              blurRadius: 4,
+                                                              spreadRadius: 1,
+                                                              offset: Offset(
+                                                                0,
+                                                                -15.h,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Positioned(
+                                                      bottom: 0,
+                                                      left: 0,
+                                                      right: 0,
+                                                      height: 24.h,
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color:
+                                                                  Colors.white,
+                                                              blurRadius: 7,
+                                                              spreadRadius: 3,
+                                                              offset: Offset(
+                                                                0,
+                                                                20.h,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ],
+                                              );
                                             },
                                           ),
                                         );
@@ -106,7 +159,7 @@ class _NewDeviceDialogWidgetState extends State<NewDeviceDialogWidget> {
                                       },
                                     ),
                                   ),
-                                  SizedBox(height: 12.h),
+                                  SizedBox(height: 24.h),
                                   Padding(
                                     padding: EdgeInsets.symmetric(
                                       horizontal: 36.w,
@@ -205,7 +258,7 @@ class _NewDeviceDialogWidgetState extends State<NewDeviceDialogWidget> {
                                       ],
                                     ),
                                   ),
-                                  SizedBox(height: 36.h),
+                                  SizedBox(height: 24.h),
                                 ],
                               );
                             },
@@ -221,18 +274,5 @@ class _NewDeviceDialogWidgetState extends State<NewDeviceDialogWidget> {
         ),
       ),
     );
-  }
-}
-
-///
-class QueueManagerVew extends StatelessWidget {
-  ///
-  const QueueManagerVew({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(color: Colors.red);
   }
 }
